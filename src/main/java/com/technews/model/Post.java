@@ -2,8 +2,8 @@ package com.technews.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
+
 import javax.persistence.*;
-import javax.xml.stream.events.Comment;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +24,7 @@ public class Post implements Serializable {
     @Transient
     private int voteCount;
     private Integer userId;
+
     @NotNull
     @Temporal(TemporalType.DATE)
     @Column(name = "posted_at")
@@ -34,13 +35,13 @@ public class Post implements Serializable {
     @Column(name = "updated_at")
     private Date updatedAt = new Date();
 
-// Need to use FetchType.LAZY to resolve multiple bags exception
-@OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-private List<Comment> comments;
+    // Need to use FetchType.LAZY to resolve multiple bags exception
+    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> comments;
 
-  public Post() {
 
-  }
+   public Post() {
+   }
 
     public Post(Integer id, String title, String postUrl, int voteCount, Integer userId) {
         this.id = id;
@@ -125,7 +126,7 @@ private List<Comment> comments;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Post)) return false;
         Post post = (Post) o;
         return getVoteCount() == post.getVoteCount() &&
                 Objects.equals(getId(), post.getId()) &&
@@ -139,10 +140,9 @@ private List<Comment> comments;
     }
 
     @Override
-	public int hashCode() {
+    public int hashCode() {
         return Objects.hash(getId(), getTitle(), getPostUrl(), getUserName(), getVoteCount(), getUserId(), getPostedAt(), getUpdatedAt(), getComments());
     }
-
 
     @Override
     public String toString() {
